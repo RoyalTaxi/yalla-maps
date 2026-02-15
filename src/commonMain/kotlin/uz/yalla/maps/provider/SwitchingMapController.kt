@@ -8,7 +8,10 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withTimeoutOrNull
 import uz.yalla.core.contract.MapPreferences
 import uz.yalla.core.geo.GeoPoint
 import uz.yalla.core.kind.MapKind
@@ -17,6 +20,7 @@ import uz.yalla.maps.api.model.CameraPosition
 import uz.yalla.maps.api.model.MarkerState
 import uz.yalla.maps.provider.google.GoogleMapController
 import uz.yalla.maps.provider.libre.LibreMapController
+import kotlin.time.Duration.Companion.seconds
 
 class SwitchingMapController(
     mapPreferences: MapPreferences,
@@ -26,6 +30,8 @@ class SwitchingMapController(
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
     private var activeController: MapController = googleController
     private var collectorJob: Job? = null
+    private var handoffJob: Job? = null
+    private var suppressStateSync: Boolean = false
 
     private val _cameraPosition = MutableStateFlow(CameraPosition.DEFAULT)
     override val cameraPosition = _cameraPosition.asStateFlow()
@@ -92,6 +98,8 @@ class SwitchingMapController(
     override fun onMapReady() = activeController.onMapReady()
 
     override fun reset() {
+        handoffJob?.cancel()
+        suppressStateSync = false
         googleController.reset()
         libreController.reset()
         _isReady.value = false
@@ -115,19 +123,48 @@ class SwitchingMapController(
     }
 
     private fun seedNextController(nextController: MapController) {
+        handoffJob?.cancel()
+
+        val preservedCamera = _cameraPosition.value
         val currentMarker = _markerState.value
+        val hasPreservedState = preservedCamera != CameraPosition.DEFAULT || currentMarker != MarkerState.INITIAL
+        suppressStateSync = hasPreservedState
+
         if (currentMarker != MarkerState.INITIAL) {
             nextController.updateMarkerState(currentMarker)
+        }
+
+        if (!hasPreservedState) return
+
+        handoffJob = scope.launch {
+            // Wait until the next provider map is ready before applying preserved camera/marker.
+            withTimeoutOrNull(5.seconds) {
+                nextController.isReady
+                    .filter { it }
+                    .first()
+            }
+
+            if (preservedCamera != CameraPosition.DEFAULT) {
+                nextController.moveTo(preservedCamera.target, preservedCamera.zoom)
+            }
+            if (currentMarker != MarkerState.INITIAL) {
+                nextController.updateMarkerState(currentMarker.copy(isMoving = false))
+            }
+
+            suppressStateSync = false
+            syncFromActive()
         }
     }
 
     private fun updateCameraFromController(cameraPosition: CameraPosition) {
+        if (suppressStateSync) return
         val current = _cameraPosition.value
         if (cameraPosition == CameraPosition.DEFAULT && current != CameraPosition.DEFAULT) return
         _cameraPosition.value = cameraPosition
     }
 
     private fun updateMarkerFromController(markerState: MarkerState) {
+        if (suppressStateSync) return
         val current = _markerState.value
         if (markerState == MarkerState.INITIAL && current != MarkerState.INITIAL) return
         _markerState.value = markerState
