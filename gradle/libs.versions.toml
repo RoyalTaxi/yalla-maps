@@ -1,0 +1,46 @@
+[versions]
+agp = "9.0.0"
+kotlin = "2.3.0"
+compose-multiplatform = "1.10.0"
+compose-material3 = "1.9.0-beta03"
+coroutines = "1.10.2"
+lifecycle = "2.10.0-alpha06"
+koin = "4.1.0"
+maplibre = "0.11.1"
+google-maps-compose = "8.0.0"
+play-services-maps = "20.0.0"
+androidx-core-ktx = "1.17.0"
+moko-geo = "0.8.0"
+
+yalla-core = "1.0.2"
+yalla-design = "1.1.0"
+yalla-resources = "1.5.0"
+
+[libraries]
+yalla-core = { module = "uz.yalla:core", version.ref = "yalla-core" }
+yalla-design = { module = "uz.yalla:design", version.ref = "yalla-design" }
+yalla-resources = { module = "uz.yalla:resources", version.ref = "yalla-resources" }
+
+kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
+androidx-lifecycle-runtime-compose = { module = "org.jetbrains.androidx.lifecycle:lifecycle-runtime-compose", version.ref = "lifecycle" }
+koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
+koin-compose = { module = "io.insert-koin:koin-compose", version.ref = "koin" }
+
+compose-runtime = { module = "org.jetbrains.compose.runtime:runtime", version.ref = "compose-multiplatform" }
+compose-foundation = { module = "org.jetbrains.compose.foundation:foundation", version.ref = "compose-multiplatform" }
+compose-material3 = { module = "org.jetbrains.compose.material3:material3", version.ref = "compose-material3" }
+compose-components-resources = { module = "org.jetbrains.compose.components:components-resources", version.ref = "compose-multiplatform" }
+
+geo = { module = "dev.icerock.moko:geo", version.ref = "moko-geo" }
+geo-compose = { module = "dev.icerock.moko:geo-compose", version.ref = "moko-geo" }
+
+maplibre-compose = { module = "org.maplibre.compose:maplibre-compose", version.ref = "maplibre" }
+google-maps-compose = { module = "com.google.maps.android:maps-compose", version.ref = "google-maps-compose" }
+play-services-maps = { module = "com.google.android.gms:play-services-maps", version.ref = "play-services-maps" }
+androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "androidx-core-ktx" }
+
+[plugins]
+kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+android-multiplatform-library = { id = "com.android.kotlin.multiplatform.library", version.ref = "agp" }
+compose-multiplatform = { id = "org.jetbrains.compose", version.ref = "compose-multiplatform" }
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
