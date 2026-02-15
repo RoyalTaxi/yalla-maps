@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.7] - 2026-02-15
+
+### Fixed
+- Re-released the recenter reliability fix from `1.0.6` with no behavioral changes.
+- Ensured complete multi-platform artifact publication after a partial upload conflict on the previous patch version.
+
+## [1.0.6] - 2026-02-15
+
+### Fixed
+- Fixed missed recenter after padding updates when a programmatic camera target is active and the camera is already idle.
+- Ensured queued recenter executes immediately in both providers (`GoogleMapController`, `LibreMapController`) instead of waiting for a future idle callback that may never fire.
+- Restored consistent recenter behavior when entering Taxi flow without destination across Google Maps and MapLibre providers.
+
 ## [1.0.5] - 2026-02-16
 
 ### Fixed

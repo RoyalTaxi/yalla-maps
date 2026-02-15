@@ -232,6 +232,9 @@ class LibreMapController : MapController {
 
         if (programmaticTarget != null) {
             queuedRecenter = RecenterRequest(programmaticTarget!!, programmaticZoom ?: camera.position.zoom)
+            if (!camera.isCameraMoving) {
+                onCameraIdle()
+            }
             return
         }
 

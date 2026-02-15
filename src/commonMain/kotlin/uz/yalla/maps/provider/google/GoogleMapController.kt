@@ -189,6 +189,9 @@ class GoogleMapController : MapController {
         if (programmaticTarget != null) {
             val camera = cameraState ?: return
             queuedRecenter = RecenterRequest(programmaticTarget!!, programmaticZoom ?: camera.position.zoom)
+            if (!camera.isMoving) {
+                onCameraIdle()
+            }
         }
     }
 
