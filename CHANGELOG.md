@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.8] - 2026-02-16
+
+### Added
+- Added optional `startMarkerLabel` and `endMarkerLabel` to `ExtendedMap.Content` and forwarded them through `SwitchingMapProvider`.
+- Enabled both Google and MapLibre extended maps to render marker badge labels from the new API when `showMarkerLabels` is enabled.
+
 ## [1.0.7] - 2026-02-15
 
 ### Fixed

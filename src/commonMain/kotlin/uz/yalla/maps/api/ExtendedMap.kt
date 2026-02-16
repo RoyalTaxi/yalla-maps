@@ -15,6 +15,8 @@ interface ExtendedMap {
         initialPoint: GeoPoint? = null,
         showLocationIndicator: Boolean = true,
         showMarkerLabels: Boolean = true,
+        startMarkerLabel: String? = null,
+        endMarkerLabel: String? = null,
         isInteractionEnabled: Boolean = true,
         useInternalCameraInitialization: Boolean = true,
         onMarkerChanged: ((MarkerState) -> Unit)? = null,

@@ -46,6 +46,8 @@ class GoogleExtendedMap : ExtendedMap {
         initialPoint: GeoPoint?,
         showLocationIndicator: Boolean,
         showMarkerLabels: Boolean,
+        startMarkerLabel: String?,
+        endMarkerLabel: String?,
         isInteractionEnabled: Boolean,
         useInternalCameraInitialization: Boolean,
         onMarkerChanged: ((MarkerState) -> Unit)?,
@@ -139,6 +141,8 @@ class GoogleExtendedMap : ExtendedMap {
             locations = locations,
             showLocationIndicator = showLocationIndicator,
             showMarkerLabels = showMarkerLabels,
+            startMarkerLabel = startMarkerLabel,
+            endMarkerLabel = endMarkerLabel,
             userLocation = currentLocation,
             contentPadding = contentPadding,
             onMapSizeChanged = googleController::setMapSize,
@@ -197,6 +201,8 @@ private fun MapContent(
     locations: List<GeoPoint>,
     showLocationIndicator: Boolean,
     showMarkerLabels: Boolean,
+    startMarkerLabel: String?,
+    endMarkerLabel: String?,
     userLocation: GeoPoint?,
     contentPadding: PaddingValues,
     onMapSizeChanged: ((IntSize) -> Unit)?,
@@ -221,7 +227,9 @@ private fun MapContent(
             LocationsLayer(
                 arrival = null,
                 duration = null,
-                locations = locations
+                locations = locations,
+                startLabel = if (showMarkerLabels) startMarkerLabel else null,
+                endLabel = if (showMarkerLabels) endMarkerLabel else null
             )
 
             if (showLocationIndicator) {

@@ -45,6 +45,8 @@ class LibreExtendedMap : ExtendedMap {
         initialPoint: GeoPoint?,
         showLocationIndicator: Boolean,
         showMarkerLabels: Boolean,
+        startMarkerLabel: String?,
+        endMarkerLabel: String?,
         isInteractionEnabled: Boolean,
         useInternalCameraInitialization: Boolean,
         onMarkerChanged: ((MarkerState) -> Unit)?,
@@ -137,6 +139,9 @@ class LibreExtendedMap : ExtendedMap {
             route = route,
             locations = locations,
             showLocationIndicator = showLocationIndicator,
+            showMarkerLabels = showMarkerLabels,
+            startMarkerLabel = startMarkerLabel,
+            endMarkerLabel = endMarkerLabel,
             userLocation = currentLocation,
             onMapReady = {
                 libreController.onMapReady()
@@ -192,6 +197,9 @@ private fun MapContent(
     route: List<GeoPoint>,
     locations: List<GeoPoint>,
     showLocationIndicator: Boolean,
+    showMarkerLabels: Boolean,
+    startMarkerLabel: String?,
+    endMarkerLabel: String?,
     userLocation: GeoPoint?,
     onMapReady: () -> Unit,
     content: @Composable MapScope.() -> Unit
@@ -216,7 +224,9 @@ private fun MapContent(
             LocationsLayer(
                 arrival = null,
                 duration = null,
-                locations = locations
+                locations = locations,
+                startLabel = if (showMarkerLabels) startMarkerLabel else null,
+                endLabel = if (showMarkerLabels) endMarkerLabel else null
             )
 
             if (showLocationIndicator) {
