@@ -12,7 +12,6 @@ import org.maplibre.compose.camera.CameraState
 import org.maplibre.compose.map.MapOptions
 import org.maplibre.compose.map.MaplibreMap
 import org.maplibre.compose.style.BaseStyle
-import uz.yalla.core.contract.MapPreferences
 import uz.yalla.core.geo.GeoPoint
 import uz.yalla.core.kind.ThemeKind
 import uz.yalla.maps.api.MapController
@@ -24,10 +23,15 @@ import uz.yalla.maps.config.platform.getPlatformOrnamentOptions
 import uz.yalla.maps.config.platform.getPlatformRenderOptions
 
 @Composable
-internal fun rememberMapTheme(mapPreferences: MapPreferences): ThemeKind {
+internal fun rememberMapTheme(themeType: ThemeKind): ThemeKind {
     val isSystemDark = isSystemInDarkTheme()
-    return remember(isSystemDark) {
-        if (isSystemDark) ThemeKind.Dark else ThemeKind.Light
+    return remember(themeType, isSystemDark) {
+        when (themeType) {
+            ThemeKind.Light -> ThemeKind.Light
+            ThemeKind.Dark -> ThemeKind.Dark
+            ThemeKind.System ->
+                if (isSystemDark) ThemeKind.Dark else ThemeKind.Light
+        }
     }
 }
 

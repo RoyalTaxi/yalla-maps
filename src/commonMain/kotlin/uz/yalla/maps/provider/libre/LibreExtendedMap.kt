@@ -58,7 +58,8 @@ class LibreExtendedMap : ExtendedMap {
         val dependencies: MapDependencies = koinInject()
         val scope = rememberCoroutineScope()
 
-        val theme = rememberMapTheme(dependencies.mapPreferences)
+        val themeType by dependencies.themeType.collectAsStateWithLifecycle(ThemeKind.System)
+        val theme = rememberMapTheme(themeType)
 
         val currentLocation by dependencies.locationProvider.currentLocation.collectAsStateWithLifecycle(null)
         val lastLocation by (dependencies.lastLocationProvider?.lastLocation

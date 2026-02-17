@@ -25,7 +25,9 @@ import kotlinx.cinterop.ObjCSignatureOverride
 import kotlinx.cinterop.useContents
 import platform.CoreLocation.CLLocationCoordinate2DMake
 import platform.UIKit.UIEdgeInsetsMake
+import platform.UIKit.UIUserInterfaceStyle
 import platform.darwin.NSObject
+import uz.yalla.core.kind.ThemeKind
 import uz.yalla.maps.model.MapProperties
 import uz.yalla.maps.model.MapType
 import uz.yalla.maps.model.MapUiSettings
@@ -72,12 +74,19 @@ actual fun GoogleMap(
     cameraPositionState: CameraPositionState,
     properties: MapProperties,
     uiSettings: MapUiSettings,
+    theme: ThemeKind,
     contentPadding: PaddingValues,
     onMapLoaded: (() -> Unit)?,
     content:
         (@Composable @GoogleMapComposable
             () -> Unit)?,
 ) {
+    val interfaceStyle = when (theme) {
+        ThemeKind.Light -> UIUserInterfaceStyle.UIUserInterfaceStyleLight
+        ThemeKind.Dark -> UIUserInterfaceStyle.UIUserInterfaceStyleDark
+        ThemeKind.System -> UIUserInterfaceStyle.UIUserInterfaceStyleUnspecified
+    }
+
     val mapView = remember {
         GMSMapView().apply {
             paddingAdjustmentBehavior = GMSMapViewPaddingAdjustmentBehavior.byValue(2u)
@@ -126,6 +135,7 @@ actual fun GoogleMap(
                     viewingAngle = cameraPositionState.position.tilt.toDouble()
                 )
                 mapType = properties.mapType.toGMSMapType()
+                overrideUserInterfaceStyle = interfaceStyle
                 buildingsEnabled = properties.isBuildingEnabled
                 indoorEnabled = properties.isIndoorEnabled
                 trafficEnabled = properties.isTrafficEnabled
@@ -149,6 +159,7 @@ actual fun GoogleMap(
         modifier = modifier,
         update = { view ->
             view.mapType = properties.mapType.toGMSMapType()
+            view.overrideUserInterfaceStyle = interfaceStyle
             view.buildingsEnabled = properties.isBuildingEnabled
             view.indoorEnabled = properties.isIndoorEnabled
             view.trafficEnabled = properties.isTrafficEnabled

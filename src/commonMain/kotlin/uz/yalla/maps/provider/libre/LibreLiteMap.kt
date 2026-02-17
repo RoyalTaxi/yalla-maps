@@ -14,6 +14,7 @@ import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 import org.maplibre.compose.camera.rememberCameraState
 import uz.yalla.core.geo.GeoPoint
+import uz.yalla.core.kind.ThemeKind
 import uz.yalla.maps.api.LiteMap
 import uz.yalla.maps.api.MapController
 import uz.yalla.maps.api.model.MarkerState
@@ -41,7 +42,8 @@ class LibreLiteMap : LiteMap {
         val dependencies: MapDependencies = koinInject()
         val scope = rememberCoroutineScope()
 
-        val theme = rememberMapTheme(dependencies.mapPreferences)
+        val themeType by dependencies.themeType.collectAsStateWithLifecycle(ThemeKind.System)
+        val theme = rememberMapTheme(themeType)
         val currentLocation by dependencies.locationProvider.currentLocation.collectAsStateWithLifecycle(null)
         val lastLocation by (dependencies.lastLocationProvider?.lastLocation
             ?: kotlinx.coroutines.flow.flowOf(null)).collectAsStateWithLifecycle(null)

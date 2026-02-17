@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.9] - 2026-02-17
+
+### Fixed
+- Added explicit map theme propagation (`ThemeKind.Light`, `ThemeKind.Dark`, `ThemeKind.System`) through `MapDependencies` so provider theming follows app preference, not only system UI mode.
+- Updated Google Maps rendering to apply explicit theme selection on Android (`LIGHT`, `DARK`, `FOLLOW_SYSTEM`) and iOS (`Light`, `Dark`, `Unspecified`) instead of hard-wiring system dark detection.
+- Updated MapLibre theme resolution to honor explicit app theme and only fall back to system dark mode when `ThemeKind.System` is selected.
+
 ## [1.0.8] - 2026-02-16
 
 ### Added

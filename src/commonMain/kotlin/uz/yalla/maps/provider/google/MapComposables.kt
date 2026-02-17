@@ -14,6 +14,7 @@ import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.IntSize
 import kotlinx.coroutines.flow.collectLatest
 import uz.yalla.core.geo.GeoPoint
+import uz.yalla.core.kind.ThemeKind
 import uz.yalla.maps.api.MapController
 import uz.yalla.maps.api.model.MarkerState
 import uz.yalla.maps.compose.CameraMoveStartedReason
@@ -56,6 +57,7 @@ private val DefaultProperties = MapProperties(
 @Composable
 fun BaseMapContent(
     cameraState: CameraPositionState,
+    theme: ThemeKind,
     modifier: Modifier = Modifier,
     gesturesEnabled: Boolean = true,
     contentPadding: PaddingValues,
@@ -80,6 +82,7 @@ fun BaseMapContent(
         cameraPositionState = cameraState,
         properties = DefaultProperties,
         uiSettings = uiSettings,
+        theme = theme,
         contentPadding = contentPadding,
         onMapLoaded = onMapReady,
         content = content

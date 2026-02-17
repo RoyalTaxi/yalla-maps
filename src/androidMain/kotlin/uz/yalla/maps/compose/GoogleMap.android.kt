@@ -3,9 +3,11 @@ package uz.yalla.maps.compose
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import uz.yalla.core.kind.ThemeKind
 import uz.yalla.maps.model.MapProperties
 import uz.yalla.maps.model.MapType
 import uz.yalla.maps.model.MapUiSettings
+import com.google.maps.android.compose.ComposeMapColorScheme as GoogleMapColorScheme
 import com.google.maps.android.compose.GoogleMap as AndroidGoogleMap
 import com.google.maps.android.compose.MapProperties as GoogleMapProperties
 import com.google.maps.android.compose.MapType as GoogleMapType
@@ -17,6 +19,7 @@ actual fun GoogleMap(
     cameraPositionState: CameraPositionState,
     properties: MapProperties,
     uiSettings: MapUiSettings,
+    theme: ThemeKind,
     contentPadding: PaddingValues,
     onMapLoaded: (() -> Unit)?,
     content:
@@ -35,11 +38,17 @@ actual fun GoogleMap(
         MapType.HYBRID -> GoogleMapType.HYBRID
         MapType.TERRAIN -> GoogleMapType.TERRAIN
     }
+    val mapColorScheme = when (theme) {
+        ThemeKind.Light -> GoogleMapColorScheme.LIGHT
+        ThemeKind.Dark -> GoogleMapColorScheme.DARK
+        ThemeKind.System -> GoogleMapColorScheme.FOLLOW_SYSTEM
+    }
 
     AndroidGoogleMap(
         modifier = modifier,
         cameraPositionState = googleCameraPositionState,
         contentPadding = contentPadding,
+        mapColorScheme = mapColorScheme,
         properties = GoogleMapProperties(
             isBuildingEnabled = properties.isBuildingEnabled,
             isIndoorEnabled = properties.isIndoorEnabled,

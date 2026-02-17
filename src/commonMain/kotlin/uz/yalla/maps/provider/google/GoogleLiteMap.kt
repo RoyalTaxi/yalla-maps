@@ -13,6 +13,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 import uz.yalla.core.geo.GeoPoint
+import uz.yalla.core.kind.ThemeKind
 import uz.yalla.maps.api.LiteMap
 import uz.yalla.maps.api.MapController
 import uz.yalla.maps.api.model.MarkerState
@@ -42,6 +43,7 @@ class GoogleLiteMap : LiteMap {
         val scope = rememberCoroutineScope()
         val density = LocalDensity.current
 
+        val themeType by dependencies.themeType.collectAsStateWithLifecycle(ThemeKind.System)
         val currentLocation by dependencies.locationProvider.currentLocation.collectAsStateWithLifecycle(null)
         val lastLocation by (dependencies.lastLocationProvider?.lastLocation
             ?: kotlinx.coroutines.flow.flowOf(null)).collectAsStateWithLifecycle(null)
@@ -107,6 +109,7 @@ class GoogleLiteMap : LiteMap {
 
         BaseMapContent(
             cameraState = cameraState,
+            theme = themeType,
             modifier = modifier,
             contentPadding = contentPadding,
             onMapSizeChanged = googleController::setMapSize,

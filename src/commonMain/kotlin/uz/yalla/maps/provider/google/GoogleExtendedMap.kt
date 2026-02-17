@@ -17,6 +17,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kotlinx.coroutines.CoroutineScope
 import org.koin.compose.koinInject
 import uz.yalla.core.geo.GeoPoint
+import uz.yalla.core.kind.ThemeKind
 import uz.yalla.maps.api.ExtendedMap
 import uz.yalla.maps.api.MapController
 import uz.yalla.maps.api.MapScope
@@ -60,6 +61,7 @@ class GoogleExtendedMap : ExtendedMap {
         val scope = rememberCoroutineScope()
         val density = LocalDensity.current
 
+        val themeType by dependencies.themeType.collectAsStateWithLifecycle(ThemeKind.System)
         val currentLocation by dependencies.locationProvider.currentLocation.collectAsStateWithLifecycle(null)
         val lastLocation by (dependencies.lastLocationProvider?.lastLocation
             ?: kotlinx.coroutines.flow.flowOf(null)).collectAsStateWithLifecycle(null)
@@ -136,6 +138,7 @@ class GoogleExtendedMap : ExtendedMap {
         MapContent(
             modifier = modifier,
             cameraState = cameraState,
+            theme = themeType,
             isInteractionEnabled = isInteractionEnabled,
             route = route,
             locations = locations,
@@ -196,6 +199,7 @@ private fun CameraTrackingEffect(
 private fun MapContent(
     modifier: Modifier,
     cameraState: CameraPositionState,
+    theme: ThemeKind,
     isInteractionEnabled: Boolean,
     route: List<GeoPoint>,
     locations: List<GeoPoint>,
@@ -216,6 +220,7 @@ private fun MapContent(
     Box(modifier = modifier) {
         BaseMapContent(
             cameraState = cameraState,
+            theme = theme,
             gesturesEnabled = isInteractionEnabled,
             modifier = Modifier.fillMaxSize(),
             contentPadding = contentPadding,
