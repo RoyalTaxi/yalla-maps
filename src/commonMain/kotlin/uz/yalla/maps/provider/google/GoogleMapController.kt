@@ -17,6 +17,7 @@ import uz.yalla.maps.api.model.MarkerState
 import uz.yalla.maps.compose.CameraPositionState
 import uz.yalla.maps.config.MapConstants
 import uz.yalla.maps.model.LatLng
+import uz.yalla.maps.util.hasSameValues
 import uz.yalla.maps.util.plus
 import kotlin.math.roundToInt
 import uz.yalla.maps.model.CameraPosition as ComposeCameraPosition
@@ -46,6 +47,11 @@ class GoogleMapController : MapController {
     override val isReady = _isReady.asStateFlow()
 
     fun bind(camera: CameraPositionState, scope: CoroutineScope, density: Density) {
+        if (cameraState !== camera) {
+            cancelActiveAnimation()
+            clearProgrammaticTarget()
+            queuedRecenter = null
+        }
         cameraState = camera
         coroutineScope = scope
         screenDensity = density
@@ -87,6 +93,7 @@ class GoogleMapController : MapController {
             return
         }
 
+        clearProgrammaticTarget()
         syncCameraState(camera)
     }
 
@@ -171,20 +178,26 @@ class GoogleMapController : MapController {
     override suspend fun setZoom(zoom: Float) {
         val camera = cameraState ?: return
         cancelActiveAnimation()
+        clearProgrammaticTarget()
         camera.animate(camera.position.copy(zoom = zoom.clampZoom()), durationMs = ANIMATION_DURATION)
         updateFromCamera(camera.position)
     }
 
     override fun setDesiredPadding(padding: PaddingValues) {
+        if (targetPadding.hasSameValues(padding) && _contentPadding.value.hasSameValues(padding)) return
         targetPadding = padding
-        _contentPadding.value = padding
+        if (!_contentPadding.value.hasSameValues(padding)) {
+            _contentPadding.value = padding
+        }
     }
 
     override suspend fun updatePadding(padding: PaddingValues) {
-        if (targetPadding.equals(padding)) return
+        if (targetPadding.hasSameValues(padding) && _contentPadding.value.hasSameValues(padding)) return
 
         targetPadding = padding
-        _contentPadding.value = padding
+        if (!_contentPadding.value.hasSameValues(padding)) {
+            _contentPadding.value = padding
+        }
 
         if (programmaticTarget != null) {
             val camera = cameraState ?: return
@@ -196,8 +209,11 @@ class GoogleMapController : MapController {
     }
 
     fun updatePaddingSilently(padding: PaddingValues) {
+        if (targetPadding.hasSameValues(padding) && _contentPadding.value.hasSameValues(padding)) return
         targetPadding = padding
-        _contentPadding.value = padding
+        if (!_contentPadding.value.hasSameValues(padding)) {
+            _contentPadding.value = padding
+        }
     }
 
     override fun updateMarkerState(state: MarkerState) {

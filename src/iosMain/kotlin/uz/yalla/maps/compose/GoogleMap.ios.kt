@@ -177,14 +177,22 @@ actual fun GoogleMap(
             val newBottom = contentPadding.calculateBottomPadding().value.toDouble()
             val newRight = contentPadding.calculateRightPadding(layoutDirection).value.toDouble()
 
-            val isPaddingDecreasing = view.padding.useContents {
-                newTop < top || newLeft < left || newBottom < bottom || newRight < right
+            val (currentTop, currentLeft, currentBottom, currentRight) = view.padding.useContents {
+                arrayOf(top, left, bottom, right)
             }
+            val isPaddingChanged = currentTop != newTop ||
+                currentLeft != newLeft ||
+                currentBottom != newBottom ||
+                currentRight != newRight
 
-            if (isPaddingDecreasing) {
-                view.padding = UIEdgeInsetsMake(0.0, 0.0, 0.0, 0.0)
+            if (isPaddingChanged) {
+                val isPaddingDecreasing =
+                    newTop < currentTop || newLeft < currentLeft || newBottom < currentBottom || newRight < currentRight
+                if (isPaddingDecreasing) {
+                    view.padding = UIEdgeInsetsMake(0.0, 0.0, 0.0, 0.0)
+                }
+                view.padding = UIEdgeInsetsMake(newTop, newLeft, newBottom, newRight)
             }
-            view.padding = UIEdgeInsetsMake(newTop, newLeft, newBottom, newRight)
         }
     )
 }

@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.10] - 2026-02-17
+
+### Fixed
+- Preserved active camera padding during provider handoff in `SwitchingMapController` and reapplied it before restored camera movement, preventing misplaced centers after map switching.
+- Applied padding updates only on the currently active provider while still propagating desired padding to both providers, removing inactive-provider side effects during map switches.
+- Cleared stale programmatic recenter state on map rebind/idle in both providers to prevent old targets from overriding fresh padding on recenter.
+- Normalized padding equality checks to semantic value comparisons (instead of object equality) across controllers and Android Google camera sync, preventing duplicate padding reapplication and wrong placements.
+- Reduced unnecessary iOS Google padding resets by only mutating `view.padding` when effective inset values actually change.
+
 ## [1.0.9] - 2026-02-17
 
 ### Fixed

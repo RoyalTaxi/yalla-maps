@@ -20,6 +20,7 @@ import uz.yalla.maps.api.model.CameraPosition
 import uz.yalla.maps.api.model.MarkerState
 import uz.yalla.maps.provider.google.GoogleMapController
 import uz.yalla.maps.provider.libre.LibreMapController
+import uz.yalla.maps.util.hasSameValues
 import kotlin.time.Duration.Companion.seconds
 
 class SwitchingMapController(
@@ -32,6 +33,7 @@ class SwitchingMapController(
     private var collectorJob: Job? = null
     private var handoffJob: Job? = null
     private var suppressStateSync: Boolean = false
+    private var desiredPadding: PaddingValues = PaddingValues()
 
     private val _cameraPosition = MutableStateFlow(CameraPosition.DEFAULT)
     override val cameraPosition = _cameraPosition.asStateFlow()
@@ -80,13 +82,16 @@ class SwitchingMapController(
     override suspend fun setZoom(zoom: Float) = activeController.setZoom(zoom)
 
     override fun setDesiredPadding(padding: PaddingValues) {
+        desiredPadding = padding
         googleController.setDesiredPadding(padding)
         libreController.setDesiredPadding(padding)
     }
 
     override suspend fun updatePadding(padding: PaddingValues) {
-        googleController.updatePadding(padding)
-        libreController.updatePadding(padding)
+        desiredPadding = padding
+        googleController.setDesiredPadding(padding)
+        libreController.setDesiredPadding(padding)
+        activeController.updatePadding(padding)
     }
 
     override fun updateMarkerState(state: MarkerState) = activeController.updateMarkerState(state)
@@ -127,8 +132,16 @@ class SwitchingMapController(
 
         val preservedCamera = _cameraPosition.value
         val currentMarker = _markerState.value
-        val hasPreservedState = preservedCamera != CameraPosition.DEFAULT || currentMarker != MarkerState.INITIAL
+        val hasPreservedCamera =
+            preservedCamera.target != GeoPoint.Zero ||
+                preservedCamera.zoom != CameraPosition.DEFAULT.zoom ||
+                preservedCamera.bearing != 0f ||
+                preservedCamera.tilt != 0f
+        val hasPreservedState = hasPreservedCamera || currentMarker != MarkerState.INITIAL
         suppressStateSync = hasPreservedState
+        nextController.setDesiredPadding(
+            if (desiredPadding.hasSameValues(PaddingValues())) preservedCamera.padding else desiredPadding
+        )
 
         if (currentMarker != MarkerState.INITIAL) {
             nextController.updateMarkerState(currentMarker)
@@ -144,7 +157,13 @@ class SwitchingMapController(
                     .first()
             }
 
-            if (preservedCamera != CameraPosition.DEFAULT) {
+            val handoffPadding =
+                if (desiredPadding.hasSameValues(PaddingValues())) preservedCamera.padding else desiredPadding
+
+            nextController.setDesiredPadding(handoffPadding)
+            nextController.updatePadding(handoffPadding)
+
+            if (hasPreservedCamera) {
                 nextController.moveTo(preservedCamera.target, preservedCamera.zoom)
             }
             if (currentMarker != MarkerState.INITIAL) {

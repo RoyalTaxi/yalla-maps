@@ -8,11 +8,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalLayoutDirection
 import com.google.android.gms.maps.CameraUpdateFactory
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import uz.yalla.maps.model.CameraPosition
 import uz.yalla.maps.model.LatLng
+import uz.yalla.maps.util.hasSameValues
 import com.google.android.gms.maps.model.CameraPosition as GoogleCameraPosition
 import com.google.android.gms.maps.model.LatLng as GoogleLatLng
 import com.google.android.gms.maps.model.LatLngBounds as GoogleLatLngBounds
@@ -89,9 +91,10 @@ internal fun rememberSyncedGoogleCameraPositionState(
         }
     }
 
+    val layoutDirection = LocalLayoutDirection.current
     var previousPadding by remember { mutableStateOf(contentPadding) }
-    LaunchedEffect(contentPadding) {
-        if (contentPadding != previousPadding) {
+    LaunchedEffect(contentPadding, layoutDirection) {
+        if (!contentPadding.hasSameValues(previousPadding, layoutDirection)) {
             googleCameraPositionState.move(
                 CameraUpdateFactory.newCameraPosition(googleCameraPositionState.position)
             )

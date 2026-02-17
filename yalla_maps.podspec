@@ -1,6 +1,6 @@
 Pod::Spec.new do |spec|
     spec.name                     = 'yalla_maps'
-    spec.version                  = '1.0.9'
+    spec.version                  = '1.0.10'
     spec.homepage                 = ''
     spec.source                   = { :http=> ''}
     spec.authors                  = ''

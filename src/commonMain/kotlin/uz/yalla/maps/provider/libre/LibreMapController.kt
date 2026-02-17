@@ -13,6 +13,7 @@ import uz.yalla.maps.api.MapController.Companion.ANIMATION_DURATION
 import uz.yalla.maps.api.model.CameraPosition
 import uz.yalla.maps.api.model.MarkerState
 import uz.yalla.maps.config.MapConstants
+import uz.yalla.maps.util.hasSameValues
 import uz.yalla.maps.util.plus
 import uz.yalla.maps.util.toBoundingBox
 import uz.yalla.maps.util.toGeoPoint
@@ -43,6 +44,11 @@ class LibreMapController : MapController {
     override val isReady = _isReady.asStateFlow()
 
     fun bind(camera: CameraState, scope: CoroutineScope) {
+        if (cameraState !== camera) {
+            cancelActiveAnimation()
+            clearProgrammaticTarget()
+            queuedRecenter = null
+        }
         cameraState = camera
         coroutineScope = scope
         appliedPadding = camera.position.padding
@@ -87,6 +93,7 @@ class LibreMapController : MapController {
             return
         }
 
+        clearProgrammaticTarget()
         syncCameraState(camera)
     }
 
@@ -212,6 +219,7 @@ class LibreMapController : MapController {
 
     override suspend fun setZoom(zoom: Float) {
         val camera = cameraState ?: return
+        clearProgrammaticTarget()
         launchAnimation {
             camera.animateTo(
                 duration = ANIMATION_DURATION.milliseconds,
@@ -221,14 +229,16 @@ class LibreMapController : MapController {
     }
 
     override fun setDesiredPadding(padding: PaddingValues) {
+        if (targetPadding.hasSameValues(padding)) return
         targetPadding = padding
     }
 
     override suspend fun updatePadding(padding: PaddingValues) {
+        if (targetPadding.hasSameValues(padding) && appliedPadding.hasSameValues(padding)) return
         targetPadding = padding
         val camera = cameraState ?: return
 
-        if (padding.equals(appliedPadding)) return
+        if (padding.hasSameValues(appliedPadding)) return
 
         if (programmaticTarget != null) {
             queuedRecenter = RecenterRequest(programmaticTarget!!, programmaticZoom ?: camera.position.zoom)
@@ -242,6 +252,7 @@ class LibreMapController : MapController {
     }
 
     fun updatePaddingSilently(padding: PaddingValues) {
+        if (targetPadding.hasSameValues(padding)) return
         targetPadding = padding
     }
 

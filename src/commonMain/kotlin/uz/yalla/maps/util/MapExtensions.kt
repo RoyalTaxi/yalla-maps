@@ -56,6 +56,15 @@ infix operator fun PaddingValues.plus(other: PaddingValues): PaddingValues =
         end = calculateRightPadding(LayoutDirection.Ltr) + other.calculateRightPadding(LayoutDirection.Ltr)
     )
 
+fun PaddingValues.hasSameValues(
+    other: PaddingValues,
+    layoutDirection: LayoutDirection = LayoutDirection.Ltr
+): Boolean =
+    calculateTopPadding() == other.calculateTopPadding() &&
+        calculateBottomPadding() == other.calculateBottomPadding() &&
+        calculateLeftPadding(layoutDirection) == other.calculateLeftPadding(layoutDirection) &&
+        calculateRightPadding(layoutDirection) == other.calculateRightPadding(layoutDirection)
+
 // ============================================
 // Geo Calculations
 // ============================================
