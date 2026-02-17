@@ -21,6 +21,7 @@ object MapConstants {
         )
 
     val UZBEKISTAN_CENTER = (37.172764 + 45.590075) / 2 to (55.996639 + 73.132278) / 2
+    val ANDIJAN_CENTER = 40.7821 to 72.3442
 
     // Padding
     val DEFAULT_PADDING = 60.dp

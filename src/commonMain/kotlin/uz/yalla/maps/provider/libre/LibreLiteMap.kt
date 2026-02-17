@@ -50,7 +50,7 @@ class LibreLiteMap : LiteMap {
 
         val fallbackTarget = remember(lastLocation) {
             lastLocation?.takeIf { it.isValid() }
-                ?: MapConstants.UZBEKISTAN_CENTER.toGeoPoint()
+                ?: MapConstants.ANDIJAN_CENTER.toGeoPoint()
         }
 
         val initialTarget = remember(initialPoint, currentLocation, fallbackTarget) {

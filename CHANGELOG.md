@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.11] - 2026-02-17
+
+### Fixed
+- Changed no-location map fallback target from `UZBEKISTAN_CENTER` to `ANDIJAN_CENTER` in both providers (Google/MapLibre, lite/extended), so denied-permission startup no longer opens at Uzbekistan center.
+- Added explicit `MapConstants.ANDIJAN_CENTER` (`40.7821, 72.3442`) for a stable no-permission fallback location.
+
 ## [1.0.10] - 2026-02-17
 
 ### Fixed
