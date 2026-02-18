@@ -37,6 +37,7 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
+            api(project.dependencies.platform(libs.yalla.bom))
             // Compose
             api(libs.compose.runtime)
             api(libs.compose.foundation)

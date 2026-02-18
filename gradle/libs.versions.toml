@@ -11,15 +11,13 @@ google-maps-compose = "8.0.0"
 play-services-maps = "20.0.0"
 androidx-core-ktx = "1.17.0"
 moko-geo = "0.8.0"
-
-yalla-core = "1.0.2"
-yalla-design = "1.1.0"
-yalla-resources = "1.5.0"
+yalla-bom = "1.0.1"
 
 [libraries]
-yalla-core = { module = "uz.yalla:core", version.ref = "yalla-core" }
-yalla-design = { module = "uz.yalla:design", version.ref = "yalla-design" }
-yalla-resources = { module = "uz.yalla:resources", version.ref = "yalla-resources" }
+yalla-bom = { module = "uz.yalla:bom", version.ref = "yalla-bom" }
+yalla-core = { module = "uz.yalla:core" }
+yalla-design = { module = "uz.yalla:design" }
+yalla-resources = { module = "uz.yalla:resources" }
 
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
 androidx-lifecycle-runtime-compose = { module = "org.jetbrains.androidx.lifecycle:lifecycle-runtime-compose", version.ref = "lifecycle" }
