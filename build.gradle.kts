@@ -11,7 +11,7 @@ plugins {
 }
 
 group = "uz.yalla"
-version = "1.0.11"
+version = "1.0.13"
 
 kotlin {
     targets.withType(KotlinMultiplatformAndroidLibraryTarget::class.java).configureEach {
@@ -37,7 +37,6 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
-            api(project.dependencies.platform(libs.yalla.bom))
             // Compose
             api(libs.compose.runtime)
             api(libs.compose.foundation)
@@ -75,7 +74,7 @@ kotlin {
     }
 
     cocoapods {
-        version = "1.0.11"
+        version = "1.0.13"
         summary = "Yalla Maps - Unified KMP map library"
         ios.deploymentTarget = "16.6"
         pod("GoogleMaps")

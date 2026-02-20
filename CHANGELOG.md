@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.13] - 2026-02-20
+
+### Fixed
+- Updated map fallback point to `MapConstants.BOBUR_SQUARE` (`40.761746, 72.351894`) across Google and MapLibre providers (lite/extended).
+- Used Bobur Square as the hard fallback when no cached last location is available.
+- Preserved cached last-location-first startup behavior while replacing the final fallback coordinate.
+
 ## [1.0.11] - 2026-02-17
 
 ### Fixed

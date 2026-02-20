@@ -72,14 +72,14 @@ class LibreExtendedMap : ExtendedMap {
         val hasCachedLocation = remember(lastLocation) { lastLocation?.isValid() == true }
         val fallbackTarget = remember(lastLocation) {
             lastLocation?.takeIf { it.isValid() }
-                ?: MapConstants.ANDIJAN_CENTER.toGeoPoint()
+                ?: MapConstants.BOBUR_SQUARE.toGeoPoint()
         }
 
         val initState = rememberMapInitState()
         val initialTarget = remember(initialPoint, userLocation, fallbackTarget, useInternalCameraInitialization) {
             when {
                 initialPoint != null -> initialPoint
-                !useInternalCameraInitialization -> MapConstants.ANDIJAN_CENTER.toGeoPoint()
+                !useInternalCameraInitialization -> MapConstants.BOBUR_SQUARE.toGeoPoint()
                 userLocation != null -> userLocation
                 else -> fallbackTarget
             }

@@ -18,10 +18,12 @@ object MapConstants {
             south = 37.172764,
             east = 73.132278,
             north = 45.590075
-        )
+    )
 
     val UZBEKISTAN_CENTER = (37.172764 + 45.590075) / 2 to (55.996639 + 73.132278) / 2
     val ANDIJAN_CENTER = 40.7821 to 72.3442
+    // Zahiriddin Muhammad Bobur square (Andijan)
+    val BOBUR_SQUARE = 40.761746 to 72.351894
 
     // Padding
     val DEFAULT_PADDING = 60.dp
